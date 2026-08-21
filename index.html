@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дусал — Хар тугалгаас ундны усаа хамгаалъя</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=PT+Sans:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#132623;
+    --ink-soft:#2b433f;
+    --paper:#FFFFFF;
+    --paper-card:#EEF2FA;
+    --navy:#2A4A8C;
+    --navy-deep:#0E2350;
+    --amber:#C1801E;
+    --amber-soft:#F1DDB3;
+    --line: rgba(19,38,35,0.14);
+    --shadow: 0 18px 40px -22px rgba(19,38,35,0.35);
+    --radius: 18px;
+    --display: 'Unbounded', sans-serif;
+    --body: 'PT Sans', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber-soft); color:var(--ink);}
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  .wrap{max-width:1140px; margin:0 auto; padding:0 32px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--navy);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px; height:6px; border-radius:50%;
+    background:var(--amber);
+    display:inline-block;
+  }
+  h1,h2,h3{
+    font-family:var(--display);
+    line-height:1.15;
+    margin:0;
+    color:var(--ink);
+    font-weight:600;
+  }
+  p{margin:0;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(236,239,231,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1140px; margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; cursor:pointer; background:none; border:none; padding:0;}
+  .brand svg, .brand img{width:30px; height:30px;}
+  .brand span{
+    font-family:var(--display); font-weight:600; font-size:19px; letter-spacing:0.01em;
+  }
+  nav.pages{display:flex; gap:4px; align-items:center;}
+  nav.pages button{
+    font-family:var(--body); font-size:15px; font-weight:700;
+    background:none; border:none; cursor:pointer;
+    color:var(--ink-soft); padding:9px 16px; border-radius:999px;
+    transition:background 0.2s, color 0.2s;
+  }
+  nav.pages button:hover{background:rgba(19,38,35,0.06);}
+  nav.pages button.active{background:var(--navy-deep); color:#fff;}
+  .navright{display:flex; align-items:center; gap:14px;}
+  .langswitch{
+    display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden;
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .langswitch button{
+    border:none; background:var(--paper-card); padding:7px 13px; cursor:pointer;
+    color:var(--ink-soft); font-family:var(--mono); font-weight:500;
+  }
+  .langswitch button.active{background:var(--amber); color:var(--ink);}
+  .navtoggle{display:none; background:none; border:none; cursor:pointer;}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--body); font-weight:700; font-size:15px;
+    padding:13px 24px; border-radius:999px; border:1px solid transparent;
+    cursor:pointer; text-decoration:none; transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:focus-visible{outline:3px solid var(--amber); outline-offset:2px;}
+  .btn-primary{background:var(--navy-deep); color:#fff;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:var(--shadow);}
+  .btn-ghost{background:transparent; color:var(--ink); border-color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink); color:var(--paper);}
+
+  /* ---------- PAGE / SECTION GENERIC ---------- */
+  main{display:block;}
+  .page{display:none;}
+  .page.active{display:block; animation:fadein 0.5s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  section{padding:88px 0;}
+  section.tight{padding:64px 0;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding-top:76px; padding-bottom:70px; position:relative; overflow:hidden;}
+  .hero .wrap{
+    display:grid; grid-template-columns:1.05fr 0.85fr; gap:56px; align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(34px, 5vw, 54px);
+    margin-top:18px;
+    letter-spacing:-0.01em;
+  }
+  .hero .lede{
+    margin-top:22px; font-size:18px; color:var(--ink-soft); max-width:46ch;
+  }
+  .hero .ctarow{margin-top:34px; display:flex; gap:14px; flex-wrap:wrap;}
+  .hero-art{position:relative; display:flex; align-items:center; justify-content:center;}
+  .hero-art svg{width:100%; height:auto; max-width:380px;}
+
+  .statline{
+    margin-top:44px; display:flex; gap:28px; flex-wrap:wrap;
+    padding-top:26px; border-top:1px solid var(--line);
+  }
+  .statline div{max-width:220px;}
+  .statline strong{
+    display:block; font-family:var(--display); font-size:15px; color:var(--navy-deep); margin-bottom:4px;
+  }
+  .statline span{font-size:14px; color:var(--ink-soft);}
+
+  /* ---------- PROBLEM ---------- */
+  .problem{background:var(--navy-deep); color:#F2F3ED;}
+  .problem .wrap{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:center;}
+  .problem .eyebrow{color:var(--amber-soft);}
+  .problem .eyebrow::before{background:var(--amber-soft);}
+  .problem h2{color:#fff; font-size:clamp(26px,3.4vw,36px); margin-top:16px;}
+  .problem p.body-text{margin-top:18px; color:#C7CFE8; font-size:16.5px; max-width:52ch;}
+  .problem .diagram{background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:var(--radius); padding:28px;}
+  .diagram svg{width:100%; height:auto;}
+  .diagram-caption{margin-top:14px; font-family:var(--mono); font-size:12.5px; color:#93A0CB; letter-spacing:0.03em;}
+
+  /* ---------- PROCESS ---------- */
+  .process h2{font-size:clamp(26px,3.4vw,34px); max-width:20ch;}
+  .process .lede{margin-top:14px; color:var(--ink-soft); max-width:60ch; font-size:16.5px;}
+  .steps{
+    margin-top:48px; display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    border-top:1px solid var(--line); border-left:1px solid var(--line);
+  }
+  .step{
+    border-right:1px solid var(--line); border-bottom:1px solid var(--line);
+    padding:28px 24px; background:var(--paper-card);
+  }
+  .step .icon{width:34px; height:34px; margin-bottom:20px; color:var(--navy);}
+  .step .tag{font-family:var(--mono); font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber);}
+  .step h3{font-size:17.5px; margin-top:8px; font-weight:600;}
+  .step p{margin-top:10px; font-size:14.5px; color:var(--ink-soft);}
+
+  /* ---------- ABOUT ---------- */
+  .page-hero{padding:64px 0 20px;}
+  .page-hero .eyebrow{margin-bottom:14px;}
+  .page-hero h1{font-size:clamp(30px,4.4vw,44px); max-width:18ch;}
+  .page-hero .lede{margin-top:18px; font-size:17px; color:var(--ink-soft); max-width:62ch;}
+
+  .team-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:16px;
+  }
+  .member{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px; display:flex; flex-direction:column; gap:14px;
+  }
+  .avatar{
+    width:52px; height:52px; border-radius:50%;
+    background:var(--navy-deep); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--display); font-weight:600; font-size:19px;
+    overflow:hidden;
+  }
+  .avatar img{width:100%; height:100%; object-fit:cover;}
+  .member.lead .avatar{background:var(--amber); color:var(--ink);}
+  .member h3{font-size:18px; font-weight:600;}
+  .member .role{font-family:var(--mono); font-size:12px; letter-spacing:0.04em; color:var(--navy); text-transform:uppercase; margin-top:2px;}
+  .member p.bio{font-size:14.5px; color:var(--ink-soft); margin-top:2px;}
+
+  .org-strip{
+    margin-top:64px; padding-top:36px; border-top:1px solid var(--line);
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap; color:var(--ink-soft); font-size:14.5px;
+  }
+  .org-strip strong{color:var(--ink); font-family:var(--body);}
+
+  /* ---------- CONTACT ---------- */
+  .contact-hero{padding:64px 0 0;}
+  .contact-card{
+    margin-top:36px; background:var(--navy-deep); color:#F2F3ED;
+    border-radius:24px; padding:52px; display:grid; grid-template-columns:1fr auto; gap:40px; align-items:center;
+  }
+  .contact-card .eyebrow{color:var(--amber-soft);}
+  .contact-card .eyebrow::before{background:var(--amber-soft);}
+  .contact-card h2{color:#fff; font-size:clamp(24px,3.2vw,32px); margin-top:14px; max-width:20ch;}
+  .contact-card p{margin-top:14px; color:#C7CFE8; max-width:48ch; font-size:16px;}
+  .insta-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--amber); color:var(--ink); font-weight:700;
+    padding:15px 26px; border-radius:999px; text-decoration:none; margin-top:22px;
+    font-family:var(--body); font-size:15.5px;
+  }
+  .insta-btn:hover{transform:translateY(-2px);}
+  .insta-btn svg{width:20px; height:20px;}
+  .handle-block{
+    text-align:center; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.16);
+    border-radius:18px; padding:30px 34px;
+  }
+  .handle-block .at{font-family:var(--mono); font-size:13px; color:#93A0CB;}
+  .handle-block .handle{font-family:var(--display); font-size:22px; margin-top:6px; color:#fff;}
+
+  .contact-notes{
+    margin-top:56px; display:grid; grid-template-columns:repeat(2,1fr); gap:24px;
+  }
+  .note{border-left:2px solid var(--amber); padding-left:20px;}
+  .note h3{font-size:16px; font-weight:700;}
+  .note p{margin-top:8px; font-size:14.5px; color:var(--ink-soft);}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line); padding:40px 0; margin-top:20px;}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  footer .fbrand{display:flex; align-items:center; gap:9px;}
+  footer .fbrand svg, footer .fbrand img{width:20px; height:20px;}
+  footer .fbrand span{font-family:var(--display); font-weight:600; font-size:15px;}
+  footer .fmeta{font-size:13.5px; color:var(--ink-soft); font-family:var(--mono);}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:860px){
+    .hero .wrap{grid-template-columns:1fr; gap:36px;}
+    .hero-art{order:-1; max-width:260px; margin:0 auto;}
+    .problem .wrap{grid-template-columns:1fr;}
+    .steps{grid-template-columns:repeat(2,1fr);}
+    .team-grid{grid-template-columns:repeat(2,1fr);}
+    .contact-card{grid-template-columns:1fr; text-align:left;}
+    .handle-block{justify-self:start;}
+    .contact-notes{grid-template-columns:1fr;}
+    nav.pages{display:none; position:absolute; top:100%; left:0; right:0; background:var(--paper); flex-direction:column; padding:12px 24px; border-bottom:1px solid var(--line); gap:2px;}
+    nav.pages.open{display:flex;}
+    .navtoggle{display:block;}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 20px;}
+    .steps{grid-template-columns:1fr;}
+    .team-grid{grid-template-columns:1fr;}
+    .contact-card{padding:30px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .page.active{animation:none;}
+    .btn:hover, .insta-btn:hover{transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <button class="brand" onclick="goPage('home')" aria-label="Дусал — нүүр хуудас">
+      <img src="dusal-logo.png" alt="Дусал лого" style="width:34px;height:34px;object-fit:contain;">
+      <span>Дусал</span>
+    </button>
+
+    <button class="navtoggle" onclick="document.querySelector('nav.pages').classList.toggle('open')" aria-label="Цэс">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#132623" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+
+    <nav class="pages">
+      <button class="pagebtn active" data-page="home" onclick="goPage('home')" data-mn="Нүүр" data-en="Home">Нүүр</button>
+      <button class="pagebtn" data-page="about" onclick="goPage('about')" data-mn="Бидний тухай" data-en="About us">Бидний тухай</button>
+      <button class="pagebtn" data-page="contact" onclick="goPage('contact')" data-mn="Холбоо барих" data-en="Contact">Холбоо барих</button>
+    </nav>
+
+    <div class="navright">
+      <div class="langswitch">
+        <button class="active" data-lang="mn" onclick="setLang('mn')">МОН</button>
+        <button data-lang="en" onclick="setLang('en')">ENG</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HOME ================= -->
+  <div class="page active" id="page-home">
+
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <span class="eyebrow" data-mn="TOMUJIN ACADEMY · ОЛОН НИЙТИЙН ЭРҮҮЛ МЭНДИЙН ТӨСӨЛ" data-en="TOMUJIN ACADEMY · PUBLIC HEALTH PROJECT">TOMUJIN ACADEMY · ОЛОН НИЙТИЙН ЭРҮҮЛ МЭНДИЙН ТӨСӨЛ</span>
+          <h1 data-mn="Нэг дусал ундны ус ч гэсэн аюулгүй байх ёстой." data-en="Even one drop of drinking water deserves to be safe.">Нэг дусал ундны ус ч гэсэн аюулгүй байх ёстой.</h1>
+          <p class="lede" data-mn="Дусал нь Баянхошуу дүүргийн айл өрхүүдийн ундны ус хадгалдаг сав, саванд агуулагдах хар тугалгын эрсдэлийг судалж, аюулгүй шийдэл боловсруулах залуучуудын баг юм." data-en="Дусал (‘Droplet’) is a youth-led team studying lead-contamination risk in household water-storage containers in Bayankhoshuu district, and building a practical solution to reduce it.">Дусал нь Баянхошуу дүүргийн айл өрхүүдийн ундны ус хадгалдаг сав, саванд агуулагдах хар тугалгын эрсдэлийг судалж, аюулгүй шийдэл боловсруулах залуучуудын баг юм.</p>
+          <div class="ctarow">
+            <button class="btn btn-primary" onclick="goPage('about')" data-mn="Багтай танилцах" data-en="Meet the team">Багтай танилцах</button>
+            <button class="btn btn-ghost" onclick="goPage('contact')" data-mn="Холбогдох" data-en="Get in touch">Холбогдох</button>
+          </div>
+
+          <div class="statline">
+            <div>
+              <strong data-mn="Судалгаа" data-en="Research">Судалгаа</strong>
+              <span data-mn="Хямд, чанаргүй хуванцар саванд орсон тогтворжуулагчийн эрсдэлийг судална." data-en="We investigate leaching risk from stabilizers used in low-quality plastic containers.">Хямд, чанаргүй хуванцар саванд орсон тогтворжуулагчийн эрсдэлийг судална.</span>
+            </div>
+            <div>
+              <strong data-mn="Загварчлал" data-en="Design">Загварчлал</strong>
+              <span data-mn="Айл өрхөд тохиромжтой, хямд шүүгчийн анхны загварыг боловсруулж байна." data-en="We're designing an early prototype filter suited to household use and budgets.">Айл өрхөд тохиромжтой, хямд шүүгчийн анхны загварыг боловсруулж байна.</span>
+            </div>
+            <div>
+              <strong data-mn="Олон нийт" data-en="Community">Олон нийт</strong>
+              <span data-mn="Баянхошуу дүүргийн өрхүүдтэй хамтран мэдээлэл түгээж байна." data-en="We work directly with Bayankhoshuu households to spread awareness.">Баянхошуу дүүргийн өрхүүдтэй хамтран мэдээлэл түгээж байна.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-art">
+          <svg viewBox="0 0 320 380" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ус хадгалах сав ба дусал">
+            <ellipse cx="160" cy="350" rx="90" ry="14" fill="#0E2350" opacity="0.08"/>
+            <rect x="90" y="150" width="140" height="190" rx="16" fill="#2A4A8C"/>
+            <rect x="90" y="150" width="140" height="190" rx="16" stroke="#0E2350" stroke-width="2"/>
+            <rect x="110" y="120" width="100" height="40" rx="10" fill="#0E2350"/>
+            <circle cx="160" cy="140" r="9" fill="#FFFFFF"/>
+            <path d="M108 190h104M108 220h104M108 250h104M108 280h104M108 310h104" stroke="#0E2350" stroke-opacity="0.35" stroke-width="2"/>
+            <path d="M160 20C160 20 122 76 122 106C122 127.6 139.1 145 160 145C180.9 145 198 127.6 198 106C198 76 160 20 160 20Z" fill="#C1801E"/>
+            <path d="M138 108C138 108 141 124 160 124" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="problem">
+      <div class="wrap">
+        <div>
+          <span class="eyebrow" data-mn="АСУУДАЛ" data-en="THE PROBLEM">АСУУДАЛ</span>
+          <h2 data-mn="Аюул нь хуванцраас биш, харин түүнд орсон нэмэлт бодисоос үүддэг." data-en="The danger isn't the plastic itself — it's the additive inside it.">Аюул нь хуванцраас биш, харин түүнд орсон нэмэлт бодисоос үүддэг.</h2>
+          <p class="body-text" data-mn="Зарим хямд, чанаргүй хуванцар сав үйлдвэрлэхэд хар тугалга суурьтай тогтворжуулагч ашигладаг. Ус удаан хугацаагаар хадгалагдах тусам энэ бодис саваас усанд аажмаар шингэх эрсдэлтэй болдог. Энэ нь мэдэгдэхүйц шинж тэмдэггүй ч удаан хугацаанд өртөх тусам эрүүл мэндэд нөлөөлж болзошгүй." data-en="Some cheap, low-quality plastic containers are manufactured using lead-based stabilizers. The longer water sits in them, the greater the risk that this additive slowly leaches into the water — often without any visible sign, but with real long-term health consequences.">Зарим хямд, чанаргүй хуванцар сав үйлдвэрлэхэд хар тугалга суурьтай тогтворжуулагч ашигладаг. Ус удаан хугацаагаар хадгалагдах тусам энэ бодис саваас усанд аажмаар шингэх эрсдэлтэй болдог. Энэ нь мэдэгдэхүйц шинж тэмдэггүй ч удаан хугацаанд өртөх тусам эрүүл мэндэд нөлөөлж болзошгүй.</p>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 420 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="40" width="130" height="150" rx="12" fill="#0A1B3D" stroke="#5A6EA8" stroke-width="1.5"/>
+            <path d="M55 90h100M55 115h100M55 140h100M55 165h100" stroke="#5A6EA8" stroke-opacity="0.5" stroke-width="1.5"/>
+            <circle cx="90" cy="70" r="3" fill="#C1801E"/>
+            <circle cx="130" cy="80" r="3" fill="#C1801E"/>
+            <circle cx="110" cy="95" r="3" fill="#C1801E"/>
+            <path d="M175 110C210 90 240 90 270 60" stroke="#C1801E" stroke-width="2" stroke-dasharray="3 5"/>
+            <path d="M175 130C215 130 245 105 275 95" stroke="#C1801E" stroke-width="2" stroke-dasharray="3 5"/>
+            <path d="M175 150C210 165 245 150 270 130" stroke="#C1801E" stroke-width="2" stroke-dasharray="3 5"/>
+            <ellipse cx="330" cy="95" rx="55" ry="55" fill="#0E2350" stroke="#5A6EA8" stroke-width="1.5"/>
+            <path d="M330 60C330 60 305 92 305 108C305 122 316 132 330 132C344 132 355 122 355 108C355 92 330 60 330 60Z" fill="#F2F3ED"/>
+            <circle cx="290" cy="70" r="2.5" fill="#C1801E"/>
+            <circle cx="365" cy="65" r="2.5" fill="#C1801E"/>
+          </svg>
+          <p class="diagram-caption" data-mn="СХЕМ · ХАМГААЛАЛТГҮЙ САВНААС УСАНД ХАР ТУГАЛГА ШИНГЭХ ЗАМ" data-en="DIAGRAM · HOW LEAD MIGRATES FROM AN UNSAFE CONTAINER INTO WATER">СХЕМ · ХАМГААЛАЛТГҮЙ САВНААС УСАНД ХАР ТУГАЛГА ШИНГЭХ ЗАМ</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="process">
+      <div class="wrap">
+        <span class="eyebrow" data-mn="БИДНИЙ АЖИЛЛАХ АРГА" data-en="HOW WE WORK">БИДНИЙ АЖИЛЛАХ АРГА</span>
+        <h2 data-mn="Судалгаанаас эхэлж, бодит шийдэл хүртэл." data-en="From research to a real-world solution." style="margin-top:16px;">Судалгаанаас эхэлж, бодит шийдэл хүртэл.</h2>
+        <p class="lede" data-mn="Дөрвөн багийн гишүүн, дөрвөн чиглэлээр зэрэгцүүлэн ажилладаг — судалгаанаас олон нийттэй харилцах хүртэл." data-en="Our team works across four connected tracks — from lab research through to community outreach.">Дөрвөн багийн гишүүн, дөрвөн чиглэлээр зэрэгцүүлэн ажилладаг — судалгаанаас олон нийттэй харилцах хүртэл.</p>
+
+        <div class="steps">
+          <div class="step">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="2"/><path d="M20 20l-5.5-5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="tag" data-mn="Судалгаа" data-en="Research">Судалгаа</span>
+            <h3 data-mn="Эрсдэлийн үнэлгээ" data-en="Risk assessment">Эрсдэлийн үнэлгээ</h3>
+            <p data-mn="Айл өрхийн ус хадгалах сав, савны төрлийг судалж, эрсдэлийн зураглал гаргана." data-en="We survey household water-storage containers and map out where the risk is highest.">Айл өрхийн ус хадгалах сав, савны төрлийг судалж, эрсдэлийн зураглал гаргана.</p>
+          </div>
+          <div class="step">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16l-6 9v7l-4-2v-5L4 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            <span class="tag" data-mn="Загварчлал" data-en="Design">Загварчлал</span>
+            <h3 data-mn="Шүүгчийн загвар" data-en="Filter prototype">Шүүгчийн загвар</h3>
+            <p data-mn="Судалгааны үр дүнд тулгуурлан хямд, хэрэглэхэд хялбар шүүгчийн анхны хувилбарыг гаргана." data-en="Based on our findings, we shape an affordable, easy-to-use first version of a household filter.">Судалгааны үр дүнд тулгуурлан хямд, хэрэглэхэд хялбар шүүгчийн анхны хувилбарыг гаргана.</p>
+          </div>
+          <div class="step">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="tag" data-mn="Платформ" data-en="Platform">Платформ</span>
+            <h3 data-mn="Мэдээллийн сан" data-en="Education hub">Мэдээллийн сан</h3>
+            <p data-mn="Хар тугалгын эрсдэл болон шүүгчийн талаарх мэдээллийг ойлгомжтой хүргэдэг веб хуудас хөгжүүлнэ." data-en="We build a website that explains lead risk and our filter clearly, for anyone to understand.">Хар тугалгын эрсдэл болон шүүгчийн талаарх мэдээллийг ойлгомжтой хүргэдэг веб хуудас хөгжүүлнэ.</p>
+          </div>
+          <div class="step">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 11l16-7-4 16-5-6-5 3-2-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            <span class="tag" data-mn="Олон нийт" data-en="Outreach">Олон нийт</span>
+            <h3 data-mn="Мэдээлэл түгээх" data-en="Community outreach">Мэдээлэл түгээх</h3>
+            <p data-mn="Social media контент бэлтгэж, компаниудтай хамтран ажиллаж, Баянхошуугийн өрхүүдэд хүрнэ." data-en="We create social content and partner with local businesses to reach Bayankhoshuu households directly.">Social media контент бэлтгэж, компаниудтай хамтран ажиллаж, Баянхошуугийн өрхүүдэд хүрнэ.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================= ABOUT ================= -->
+  <div class="page" id="page-about">
+    <section class="page-hero tight">
+      <div class="wrap">
+        <span class="eyebrow" data-mn="БИДНИЙ ТУХАЙ" data-en="ABOUT US">БИДНИЙ ТУХАЙ</span>
+        <h1 data-mn="Tomujin Academy-гийн дэмжлэгтэй, 5 хүний баг." data-en="A five-person team, supported by Tomujin Academy.">Tomujin Academy-гийн дэмжлэгтэй, 5 хүний баг.</h1>
+        <p class="lede" data-mn="Бид Баянхошуу дүүрэгт хээрийн судалгаа хийж, ундны усны эрсдэлийг бууруулах бодит шийдэл боловсруулахын төлөө хамтран ажилладаг оюутнуудын баг. Хүн бүр өөрийн чиглэлээрээ хариуцлага хүлээж, судалгаа, загварчлал, платформ, олон нийттэй харилцах ажлыг зэрэг гүйцэтгэдэг." data-en="We're a student-led team conducting fieldwork in Bayankhoshuu district and developing a real solution to reduce drinking-water risk. Each member owns a track — research, filter design, the platform, and community outreach — working in parallel toward the same goal.">Бид Баянхошуу дүүрэгт хээрийн судалгаа хийж, ундны усны эрсдэлийг бууруулах бодит шийдэл боловсруулахын төлөө хамтран ажилладаг оюутнуудын баг. Хүн бүр өөрийн чиглэлээрээ хариуцлага хүлээж, судалгаа, загварчлал, платформ, олон нийттэй харилцах ажлыг зэрэг гүйцэтгэдэг.</p>
+      </div>
+    </section>
+
+    <section class="tight">
+      <div class="wrap">
+        <div class="team-grid">
+
+          <div class="member lead">
+            <div class="avatar">M</div>
+            <div>
+              <h3>Марал</h3>
+              <div class="role" data-mn="Багийн ахлагч · Токсикологи" data-en="Team Lead · Toxicology">Багийн ахлагч · Токсикологи</div>
+            </div>
+            <p class="bio" data-mn="Төслийг удирдаж, Улсын Нийтийн Эрүүл Мэндийн Төвийн Токсикологийн тасагтай хамтран судалгааны чиглэлийг тодорхойлно." data-en="Leads the project overall and shapes the research direction in collaboration with the Toxicology Department at the National Center for Public Health.">Төслийг удирдаж, Улсын Нийтийн Эрүүл Мэндийн Төвийн Токсикологийн тасагтай хамтран судалгааны чиглэлийг тодорхойлно.</p>
+          </div>
+
+          <div class="member">
+            <div class="avatar"><img src="ariunjargal.png" alt="Ариунжаргал"></div>
+            <div>
+              <h3>Ариунжаргал</h3>
+              <div class="role" data-mn="Маркетинг · Судлаач" data-en="Marketing · Researcher">Маркетинг · Судлаач</div>
+            </div>
+            <p class="bio" data-mn="Social media дээр тавих reel, post-уудад шаардлагатай судалгааг хийж, контент бэлтгэдэг." data-en="Researches and prepares the content behind the reels and posts we publish on social media.">Social media дээр тавих reel, post-уудад шаардлагатай судалгааг хийж, контент бэлтгэдэг.</p>
+          </div>
+
+          <div class="member">
+            <div class="avatar">И</div>
+            <div>
+              <h3>Ивээл</h3>
+              <div class="role" data-mn="Шүүгчийн загвар гаргагч" data-en="Filter Prototype Designer">Шүүгчийн загвар гаргагч</div>
+            </div>
+            <p class="bio" data-mn="Багийн судалгаанд үндэслэн шүүгчийн хэлбэр, хэмжээг тооцоолж, анхны загварыг зохион бүтээдэг." data-en="Calculates the shape and dimensions of our filter based on team research, and designs the first prototype.">Багийн судалгаанд үндэслэн шүүгчийн хэлбэр, хэмжээг тооцоолж, анхны загварыг зохион бүтээдэг.</p>
+          </div>
+
+          <div class="member">
+            <div class="avatar"><img src="michidmaa.png" alt="Мичидмаа"></div>
+            <div>
+              <h3>Мичидмаа</h3>
+              <div class="role" data-mn="Маркетинг · Судлаач" data-en="Marketing · Researcher">Маркетинг · Судлаач</div>
+            </div>
+            <p class="bio" data-mn="Social media дээр тавих reel, post-уудад шаардлагатай судалгааг хийж, контент бэлтгэдэг." data-en="Researches and prepares the content behind the reels and posts we publish on social media.">Social media дээр тавих reel, post-уудад шаардлагатай судалгааг хийж, контент бэлтгэдэг.</p>
+          </div>
+
+          <div class="member">
+            <div class="avatar"><img src="soyombo.png" alt="Соёмбо"></div>
+            <div>
+              <h3>Соёмбо</h3>
+              <div class="role" data-mn="Веб хуудас хөгжүүлэгч · Судлаач" data-en="Web Developer · Researcher">Веб хуудас хөгжүүлэгч · Судлаач</div>
+            </div>
+            <p class="bio" data-mn="Хар тугалгын шүүгчийг танилцуулах веб хуудсыг хөгжүүлж, холбогдох судалгааг хийдэг." data-en="Builds the website introducing our lead filter and carries out related research.">Хар тугалгын шүүгчийг танилцуулах веб хуудсыг хөгжүүлж, холбогдох судалгааг хийдэг.</p>
+          </div>
+
+        </div>
+
+        <div class="org-strip">
+          <span data-mn="Дэмжигч байгууллага:" data-en="Supported by:"><strong>Tomujin Academy</strong></span>
+          <span>·</span>
+          <span data-mn="Хээрийн судалгааны бүс: Баянхошуу дүүрэг, Улаанбаатар" data-en="Fieldwork site: Bayankhoshuu district, Ulaanbaatar">Хээрийн судалгааны бүс: Баянхошуу дүүрэг, Улаанбаатар</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= CONTACT ================= -->
+  <div class="page" id="page-contact">
+    <section class="contact-hero tight">
+      <div class="wrap">
+        <span class="eyebrow" data-mn="ХОЛБОО БАРИХ" data-en="CONTACT">ХОЛБОО БАРИХ</span>
+        <h1 data-mn="Хамтран ажиллах уу? Бидэнтэй холбогдоорой." data-en="Want to work with us? Reach out.">Хамтран ажиллах уу? Бидэнтэй холбогдоорой.</h1>
+
+        <div class="contact-card">
+          <div>
+            <span class="eyebrow" data-mn="INSTAGRAM" data-en="INSTAGRAM">INSTAGRAM</span>
+            <h2 data-mn="Бидний ажлыг Instagram-аар дагаарай." data-en="Follow our work on Instagram.">Бидний ажлыг Instagram-аар дагаарай.</h2>
+            <p data-mn="Судалгааны явц, шүүгчийн загварын шинэчлэл, олон нийтийн үйл ажиллагааны талаарх мэдээллийг Instagram хуудсаараа дамжуулан хуваалцдаг. Хамтын ажиллагааны санал, асуулт байвал шууд бичээрэй." data-en="We share research updates, filter-design progress, and community activities through our Instagram page. For partnership inquiries or questions, message us directly there.">Судалгааны явц, шүүгчийн загварын шинэчлэл, олон нийтийн үйл ажиллагааны талаарх мэдээллийг Instagram хуудсаараа дамжуулан хуваалцдаг. Хамтын ажиллагааны санал, асуулт байвал шууд бичээрэй.</p>
+            <a class="insta-btn" href="https://instagram.com/dusal_2026" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+              <span data-mn="Дагах" data-en="Follow us">Дагах</span>
+            </a>
+          </div>
+          <div class="handle-block">
+            <div class="at" data-mn="ХАРАГДАХ НЭР" data-en="HANDLE">ХАРАГДАХ НЭР</div>
+            <div class="handle">@dusal_2026</div>
+          </div>
+        </div>
+
+        <div class="contact-notes">
+          <div class="note">
+            <h3 data-mn="Компаниудад" data-en="For businesses">Компаниудад</h3>
+            <p data-mn="Хамтын ажиллагаа, ивээн тэтгэлэгийн саналтай бол Instagram DM-ээр бичээрэй." data-en="Interested in partnering or sponsoring? Message us on Instagram.">Хамтын ажиллагаа, ивээн тэтгэлэгийн саналтай бол Instagram DM-ээр бичээрэй.</p>
+          </div>
+          <div class="note">
+            <h3 data-mn="Баянхошуугийн оршин суугчдад" data-en="For Bayankhoshuu residents">Баянхошуугийн оршин суугчдад</h3>
+            <p data-mn="Судалгаанд оролцох, санал бодлоо хуваалцах хүсэлтэй бол мөн адил Instagram хуудсаар холбогдоорой." data-en="If you'd like to take part in the research or share feedback, reach out the same way, through Instagram.">Судалгаанд оролцох, санал бодлоо хуваалцах хүсэлтэй бол мөн адил Instagram хуудсаар холбогдоорой.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fbrand">
+      <img src="dusal-logo.png" alt="Дусал лого" style="width:22px;height:22px;object-fit:contain;">
+      <span>Дусал</span>
+    </div>
+    <div class="fmeta" data-mn="TOMUJIN ACADEMY · БАЯНХОШУУ, УЛААНБААТАР · © 2026" data-en="TOMUJIN ACADEMY · BAYANKHOSHUU, ULAANBAATAR · © 2026">TOMUJIN ACADEMY · БАЯНХОШУУ, УЛААНБААТАР · © 2026</div>
+  </div>
+</footer>
+
+<script>
+  function goPage(name){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.pagebtn').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+    document.querySelector('nav.pages').classList.remove('open');
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-mn]').forEach(el => {
+      const txt = el.getAttribute('data-' + lang);
+      if(txt !== null) el.textContent = txt;
+    });
+    document.querySelectorAll('.langswitch button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+  }
+</script>
+
+</body>
+</html>
